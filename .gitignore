@@ -99,3 +99,4 @@ dmypy.json
 .prof
 
 backend/secret.json
+.vscode/settings.json

@@ -1,12 +1,13 @@
+import json
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
-from .models import Book
-import json
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from .serializers import BookSerializer
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .models import Book, Author
+from .serializers import BookSerializer, AuthorSerializer
 
 class BookDetailAPIView(APIView):
     def get(self, request, id):
@@ -31,28 +32,51 @@ class BookDetailAPIView(APIView):
         # 작동안함
         book = Book.objects.get(book_number = id)
         book.delete()
-        print("디버깅 삭제 확인", id)
+        # print("디버깅 삭제 확인", id)
         return Response(status = status.HTTP_204_NO_CONTENT)
 
 class BookListAPIView(APIView):
     def get(self, request):
         return
 
-    # def post(self, request):
-        #post는 다른 url로 옮기기
-        # if request.META['CONTENT_TYPE'] == "application/json":
-        #     request = json.loads(request.body)
-        #     newBook = Book(title = request['title'],
-        #                    ISBN = request['ISBN'])
-        # else:
-        #     newBook = Book(title = request.POST['title'],
-        #                    ISBN = request.POST['ISBN'])
-        # newBook.save()
-        # return HttpResponse(status=200)
     def post(self, request):
         serializer = BookSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(data = serializer.data, status=201)
-        # print("디버깅", serializer.data)
-        return Response(data = serializer.errors, status = 400)
+        else:
+            return Response(data = serializer.errors, status = 400)
+
+class AuthorDetailAPIView(APIView):
+    def get(self, request, id):
+        author = get_object_or_404(Author, author_number = id)
+        authorJson = AuthorSerializer(author).data
+        return Response(data = {'author' : authorJson})
+
+    def put(self, request, id):
+        author = Author.objects.get(author_number = id)
+        serializer = AuthorSerializer(author, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(data = serializer.errors, status = 400)
+
+class AuthorListAPIView(APIView):
+    def post(self, request):
+        serializer = AuthorSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data = serializer.data, status=201)
+        else:
+            return Response(data = serializer.errors, status = 400)
+
+class AuthorSearchAPIView(APIView):
+    def get(self, request):
+        serializer = AuthorSerializer(data = request.data)
+        if serializer.is_valid():
+            author = Author.objects.filter(name = serializer.data.get('name'))
+            authorJson = AuthorSerializer(author, many = True).data
+            return Response(data = authorJson)
+        else:
+            return Response(data = serializer.errors, status = 400)

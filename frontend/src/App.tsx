@@ -1,14 +1,11 @@
 import Book from "./components/Book/Book";
 import Navigation from "./components/Navigation/Navigation";
+import Router from "./Router";
 
 
-function App() {
-  return (
-    <div>
-      <Navigation></Navigation>
-      <Book></Book>
-    </div>
-  );
-}
+interface Props {}
+const App = ({  }: Props) => {
+  return <Router />;
+};
 
 export default App;

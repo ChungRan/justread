@@ -2,7 +2,6 @@ from django.db import models
 
 # Create your models here.
 class Book(models.Model):
-    book_number = models.AutoField(primary_key = True)
     title = models.TextField()
     author = models.ManyToManyField('Author', blank = True)
     publisher = models.ForeignKey('Publisher', on_delete = models.PROTECT, blank = True, null = True)
@@ -20,7 +19,6 @@ class Book(models.Model):
         return self.title
 
 class Author(models.Model):
-    author_number = models.AutoField(primary_key = True)
     name = models.TextField()
     originalName = models.TextField(blank = True)
     nationality = models.ForeignKey('Country', on_delete = models.PROTECT, blank = True, null = True)
@@ -34,7 +32,6 @@ class Author(models.Model):
         return self.name
 
 class Series(models.Model):
-    series_number = models.AutoField(primary_key = True)
     name = models.TextField()
 
     class Meta:
@@ -45,7 +42,6 @@ class Series(models.Model):
         return self.name
 
 class Publisher(models.Model):
-    publisher_number = models.AutoField(primary_key = True)
     name = models.TextField()
 
     class Meta:
@@ -86,4 +82,10 @@ class Country(models.Model):
     def __str__(self):
         return self.name
 
-# 이후에 책의 시리즈를 정리하는 Series 모델 만들기
+class Theme(models.Model):
+    name = models.TextField()
+    book = models.ManyToManyField('Book', blank = True)
+
+    class Meta:
+        verbose_name = '테마'
+        verbose_name_plural = '테마'

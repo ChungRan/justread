@@ -18,6 +18,18 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+class Pricetag(models.Model):
+    book = models.ForeignKey('Book', on_delete= models.CASCADE)
+    price = models.IntegerField(blank = True, null = True)
+    discountedPrice = models.IntegerField(blank = True, null = True) 
+    company = models.ForeignKey('Company', on_delete = models.PROTECT)
+    isDigital = models.BooleanField()
+    isRental = models.BooleanField(default = False)
+
+class Company(models.Model):
+    name = models.TextField()
+
+
 class Author(models.Model):
     name = models.TextField()
     originalName = models.TextField(blank = True)

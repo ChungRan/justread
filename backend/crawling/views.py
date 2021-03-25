@@ -9,5 +9,6 @@ from rest_framework.views import APIView
 from . import crawling
 
 def test(request):
-    crawling.crawlingTest()
+    # crawling.crawlingRidiBook(1570000118)
+    crawling.crawlingRidiBook(2036000561)
     return HttpResponse("aa")

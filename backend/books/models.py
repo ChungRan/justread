@@ -10,7 +10,7 @@ class Book(models.Model):
     page = models.IntegerField(blank = True, null = True)
     genre = models.ManyToManyField('GenreSub', blank = True)
     series = models.ManyToManyField('Series', blank = True)
-    book_picture = models.ImageField(blank = True)
+    book_picture = models.ImageField(blank = True, null = True)
 
     class Meta:
         verbose_name = '책'

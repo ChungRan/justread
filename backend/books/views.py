@@ -6,24 +6,26 @@ from django.http import Http404
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import generics
 from .models import Book, Author
 from .serializers import BookSerializer, AuthorSerializer
 
+from drf_yasg.utils import swagger_auto_schema
+
 # book/
-class BookListAPIView(APIView):
-    # def get(self, request):
-    #     return
+class BookListAPIView(generics.ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    def get(self,request):
+        return self.list(request)
 
     def post(self, request):        
-        serializer = BookSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data = serializer.data, status=201)
-        else:
-            return Response(data = serializer.errors, status = 400)
+        return self.create(request)
 
 # book/id/<int:id>/
 class BookDetailAPIView(APIView):
+
     def get(self, request, id):
         # book = Book.objects.get(pk = id)
         book = get_object_or_404(Book, pk = id)
@@ -34,6 +36,7 @@ class BookDetailAPIView(APIView):
         }
         # return JsonResponse(returnJson)
         return Response(data = returnJson)
+
 
     def put(self, request, id):
         book = Book.objects.get(pk = id)

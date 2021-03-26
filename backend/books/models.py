@@ -10,6 +10,7 @@ class Book(models.Model):
     page = models.IntegerField(blank = True, null = True)
     genre = models.ManyToManyField('GenreSub', blank = True)
     series = models.ManyToManyField('Series', blank = True)
+    book_picture = models.ImageField(blank = True, null = True)
 
     class Meta:
         verbose_name = '책'
@@ -17,6 +18,20 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+class Pricetag(models.Model):
+    book = models.ForeignKey('Book', on_delete= models.CASCADE)
+    company = models.ForeignKey('Company', on_delete = models.PROTECT)
+    price = models.IntegerField(blank = True, null = True)
+    discountedPrice = models.IntegerField(blank = True, null = True)
+    outOfStock = models.BooleanField(default = False)
+    isDigital = models.BooleanField()
+    isRental = models.BooleanField(default = False)
+    rentalPeriod = models.IntegerField(blank = True, null = True)
+
+class Company(models.Model):
+    name = models.TextField()
+
 
 class Author(models.Model):
     name = models.TextField()
